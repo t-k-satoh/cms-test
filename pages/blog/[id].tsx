@@ -1,6 +1,4 @@
-import type { NextPage } from 'next'
-
-const Blog: NextPage = ({blog}) => {
+const Blog = ({blog}: {blog: any}) => {
   return (
     <div >
       {JSON.stringify(blog)}
