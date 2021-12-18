@@ -6,11 +6,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export function middleware(req: NextRequest) {
   const basicAuth = req.headers.get('authorization')
 
-  if (
-    basicAuth &&
-    (process.env.VERCEL_ENV === 'development' ||
-      process.env.VERCEL_ENV === 'preview')
-  ) {
+  const isProduction = process.env.VERCEL_ENV === 'production'
+  const isPreview =
+    typeof req.cookies['__prerender_bypass'] !== 'undefined' &&
+    typeof req.cookies['__next_preview_data'] !== 'undefined'
+
+  if (basicAuth && (!isProduction || isPreview)) {
     const auth = basicAuth.split(' ')[1]
     const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':')
 
@@ -22,7 +23,7 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  if (process.env.VERCEL_ENV === 'production') {
+  if (isProduction && !isPreview) {
     return NextResponse.next()
   }
 
