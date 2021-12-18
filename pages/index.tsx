@@ -1,27 +1,34 @@
-import type { NextPage } from 'next'
+import type { NextPage, GetStaticProps } from 'next'
+import Link from 'next/link'
+import { PromiseType } from 'utility-types'
+import { NewsRepository } from '../src/data/news/repository'
 import styles from '../styles/Home.module.css'
-import Link from "next/link";
 
 interface Props {
-  posts: {contents: {id: string, title: string, contents: string}[]}
-  
+  news: PromiseType<ReturnType<NewsRepository['getNews']>>
 }
 
-const Home: NextPage<Props> = ({posts}) => {
+const Home: NextPage<Props> = ({ news }) => {
   return (
     <div className={styles.container}>
-      {posts.contents.map(({ id, title }) => <li key={id}><Link href={`/blog/${id}`}><a>{title}</a></Link></li>)}
+      {news.items.map(({ id, title }) => (
+        <li key={id}>
+          <Link href={`/blog/${id}`}>
+            <a>{title}</a>
+          </Link>
+        </li>
+      ))}
     </div>
   )
 }
 
-export async function getStaticProps() {
-  const res = await fetch('https://dz-test.microcms.io/api/v1/news', {headers: {['X-MICROCMS-API-KEY']: process.env.MICROCMS_API_KEY?? ''}})
-  const posts = await res.json()
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const newsRepository = new NewsRepository()
+  const news = await newsRepository.getNews()
 
   return {
     props: {
-      posts,
+      news,
     },
   }
 }

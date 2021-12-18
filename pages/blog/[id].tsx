@@ -1,30 +1,56 @@
-const Blog = ({blog}: {blog: any}) => {
-  return (
-    <div >
-      {JSON.stringify(blog)}
-    </div>
-  )
+import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
+import { PromiseType } from 'utility-types'
+import { NewsRepository } from '../../src/data/news/repository'
+
+interface Props {
+  news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
 }
 
-export const getStaticPaths = async () => {
-  const res = await fetch('https://dz-test.microcms.io/api/v1/news', {headers: {['X-MICROCMS-API-KEY']: process.env.MICROCMS_API_KEY?? ''}})
-  const data = await res.json()
+const Blog: NextPage<Props> = ({ news }) => {
+  return <div>{JSON.stringify(news)}</div>
+}
 
-  const paths = data.contents.map((content: any) => `/blog/${content.id}`);
-  return { paths, fallback: false };
-};
+export const getStaticPaths: GetStaticPaths = async () => {
+  const newsRepository = new NewsRepository()
+  const news = await newsRepository.getNews()
 
+  const paths = news.items.map((item) => `/blog/${item.id}`)
+  return { paths, fallback: false }
+}
 
-export const getStaticProps = async (context: any) => {
-  const id = context.params.id;
-  const res = await fetch(`https://dz-test.microcms.io/api/v1/news/${id}`, {headers: {['X-MICROCMS-API-KEY']: process.env.MICROCMS_API_KEY?? ''}})
-  const data = await res.json()
+export const getStaticProps: GetStaticProps<
+  Props,
+  { id: string; slug: string },
+  { draftKey: string }
+> = async (context) => {
+  const newsRepository = new NewsRepository()
+
+  if (
+    context.preview &&
+    typeof context.params !== 'undefined' &&
+    typeof context.previewData !== 'undefined'
+  ) {
+    const contentId = context.params.id
+    const draftKey = context.previewData.draftKey
+
+    const news = await newsRepository.getNewsOnID(contentId, { draftKey })
+
+    return {
+      props: {
+        news,
+        fallback: false,
+      },
+    }
+  }
+
+  const id = context.params?.id
+  const news = await newsRepository.getNewsOnID(id ?? '')
 
   return {
     props: {
-      blog: data,
+      news,
     },
-  };
-};
+  }
+}
 
 export default Blog
