@@ -1,55 +1,56 @@
-import {GetStaticProps, GetStaticPaths } from 'next'
+import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
+import { PromiseType } from 'utility-types'
+import { NewsRepository } from '../../src/data/news/repository'
 
-const Blog = ({ blog }: { blog: any }) => {
-  return (
-    <div >
-      {JSON.stringify(blog)}
-    </div>
-  )
+interface Props {
+  news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
+}
+
+const Blog: NextPage<Props> = ({ news }) => {
+  return <div>{JSON.stringify(news)}</div>
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch('https://dz-test.microcms.io/api/v1/news', {headers: {['X-MICROCMS-API-KEY']: process.env.MICROCMS_API_KEY?? ''}})
-  const data = await res.json()
+  const newsRepository = new NewsRepository()
+  const news = await newsRepository.getNews()
 
-  const paths = data.contents.map((content: any) => `/blog/${content.id}`);
-  return { paths, fallback: false };
-};
+  const paths = news.items.map((item) => `/blog/${item.id}`)
+  return { paths, fallback: false }
+}
 
+export const getStaticProps: GetStaticProps<
+  Props,
+  { id: string; slug: string },
+  { draftKey: string }
+> = async (context) => {
+  const newsRepository = new NewsRepository()
 
-export const getStaticProps: GetStaticProps<{blog: any}, {id: string, slug: string}, {draftKey: string}> = async (context) => {
+  if (
+    context.preview &&
+    typeof context.params !== 'undefined' &&
+    typeof context.previewData !== 'undefined'
+  ) {
+    const contentId = context.params.id
+    const draftKey = context.previewData.draftKey
 
-
-  if (context.preview && typeof context.params !== 'undefined' && typeof context.previewData !== 'undefined') {
-    const id = context.params.id
-    const draftKey = context.previewData.draftKey;
-
-    const content = await fetch(
-      `https://dz-test.microcms.io/api/v1/news/${id}${
-       draftKey !== undefined ? `?draftKey=${draftKey}` : ''
-      }`,
-      { headers: { 'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY || '' } }
-     ).then((res) => res.json());
-
+    const news = await newsRepository.getNewsOnID(contentId, { draftKey })
 
     return {
       props: {
-        blog: content,
-        fallback: false
+        news,
+        fallback: false,
       },
-      
-    };
+    }
   }
 
-  const id = context.params?.id;
-  const res = await fetch(`https://dz-test.microcms.io/api/v1/news/${id}`, {headers: {['X-MICROCMS-API-KEY']: process.env.MICROCMS_API_KEY?? ''}})
-  const data = await res.json()
+  const id = context.params?.id
+  const news = await newsRepository.getNewsOnID(id ?? '')
 
   return {
     props: {
-      blog: data,
+      news,
     },
-  };
-};
+  }
+}
 
 export default Blog
