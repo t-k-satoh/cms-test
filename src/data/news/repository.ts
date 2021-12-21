@@ -1,11 +1,12 @@
 import { microCmsClient } from '../../clients'
 import { News } from './api-interfaces'
+import { END_POINT } from './constants'
 import { NewsRepositoryInterface } from './repository-interfaces'
 
 export class NewsRepository implements NewsRepositoryInterface {
   public getNews: NewsRepositoryInterface['getNews'] = async (queries) => {
     const data = await microCmsClient.getList<News>({
-      endpoint: 'news',
+      endpoint: END_POINT,
       queries,
     })
 
@@ -18,7 +19,7 @@ export class NewsRepository implements NewsRepositoryInterface {
     queries
   ) => {
     const data = await microCmsClient.getListDetail<News>({
-      endpoint: 'news',
+      endpoint: END_POINT,
       contentId: id,
       queries,
     })

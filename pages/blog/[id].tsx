@@ -1,4 +1,5 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import { PromiseType } from 'utility-types'
 import { NewsRepository } from '../../src/data/news/repository'
 
@@ -7,7 +8,14 @@ interface Props {
 }
 
 const Blog: NextPage<Props> = ({ news }) => {
-  return <div>{JSON.stringify(news)}</div>
+  return (
+    <>
+      <Head>
+        <title>{news.title}</title>
+      </Head>
+      {JSON.stringify(news)}
+    </>
+  )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
