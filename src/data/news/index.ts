@@ -1,3 +1,1 @@
-import { NewsRepository } from './repository'
-
-export const newsRepository = new NewsRepository()
+export { NewsRepository } from './repository'

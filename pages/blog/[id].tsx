@@ -1,25 +1,17 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import Head from 'next/head'
 import { PromiseType } from 'utility-types'
+import { serverSideClient } from '../../src/clients/micro-cms/server-side-client'
+import { BlogContainer } from '../../src/containers/pages/blog'
 import { NewsRepository } from '../../src/data/news/repository'
 
 interface Props {
   news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
 }
 
-const Blog: NextPage<Props> = ({ news }) => {
-  return (
-    <>
-      <Head>
-        <title>{news.title}</title>
-      </Head>
-      {JSON.stringify(news)}
-    </>
-  )
-}
+const Blog: NextPage<Props> = ({ news }) => <BlogContainer news={news} />
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const newsRepository = new NewsRepository()
+  const newsRepository = new NewsRepository(serverSideClient)
   const news = await newsRepository.getNews()
 
   const paths = news.items.map((item) => `/blog/${item.id}`)
@@ -31,7 +23,7 @@ export const getStaticProps: GetStaticProps<
   { id: string; slug: string },
   { draftKey: string }
 > = async (context) => {
-  const newsRepository = new NewsRepository()
+  const newsRepository = new NewsRepository(serverSideClient)
 
   if (
     context.preview &&

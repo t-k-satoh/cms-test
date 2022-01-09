@@ -1,11 +1,17 @@
-import { microCmsClient } from '../../clients'
+import { createClient } from 'microcms-js-sdk'
 import { News } from './api-interfaces'
 import { END_POINT } from './constants'
 import { NewsRepositoryInterface } from './repository-interfaces'
 
 export class NewsRepository implements NewsRepositoryInterface {
+  private client: ReturnType<typeof createClient>
+
+  constructor(client: ReturnType<typeof createClient>) {
+    this.client = client
+  }
+
   public getNews: NewsRepositoryInterface['getNews'] = async (queries) => {
-    const data = await microCmsClient.getList<News>({
+    const data = await this.client.getList<News>({
       endpoint: END_POINT,
       queries,
     })
@@ -18,7 +24,7 @@ export class NewsRepository implements NewsRepositoryInterface {
     id,
     queries
   ) => {
-    const data = await microCmsClient.getListDetail<News>({
+    const data = await this.client.getListDetail<News>({
       endpoint: END_POINT,
       contentId: id,
       queries,
