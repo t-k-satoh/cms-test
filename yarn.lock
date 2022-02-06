@@ -3852,10 +3852,10 @@ react-loading@2.0.3:
   resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-2.0.3.tgz#e8138fb0c3e4674e481b320802ac7048ae14ffb9"
   integrity sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==
 
-react-query@3.34.13:
-  version "3.34.13"
-  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.34.13.tgz#6804767e2e00c780f29fc5cbf923e48bb5cb7f83"
-  integrity sha512-fGEzTLgXy2SGsLZbNY6qUk6IT3MYbWADRY+nyZoDJdCuplt1r/MqZO1I6RsvKG0qAuYfg/l9Er/Ce39xrb4epw==
+react-query@3.34.14:
+  version "3.34.14"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.34.14.tgz#ba944c1c36bbeab3e7037c42e8e862acd73111ff"
+  integrity sha512-KVMnM8omt+81oO9fPZfM65pGhQilpWzGsNwAqeeLMB2sG3xwY3bpIEYbhDf7FFgsqhAQfSzmCL4gRSiJaWIDwA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"
