@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   browser-tools: circleci/browser-tools@1.2.4
-  renovate: daniel-shuy/renovate@3.1.0
 
 executors:
   default:
@@ -85,7 +84,3 @@ workflows:
       - build:
           requires:
             - test
-  renovate:
-    jobs:
-      - renovate/self-hosted:
-          config_file_path: renovate.json 
