@@ -75,12 +75,10 @@ jobs:
     executor:
       name: default
     steps:
-      - renovate/self-hosted:
-          config_file_path: renovate.json
-      - nightly:
-          triggers:
-            - schedule:
-                cron: 0 * * * *
+        - renovate/self-hosted:
+            config_file_path: renovate.json 
+            cache_version: v1 
+            log_level: info 
 
 workflows:
   pull-request:
