@@ -1,24 +1,22 @@
 import type { NextPage, GetStaticProps } from 'next'
-import { PromiseType } from 'utility-types'
+import { dehydrate, QueryClient } from 'react-query'
 import { serverSideClient } from '../src/clients/micro-cms/server-side-client'
 import { HomeContainer } from '../src/containers/pages/home'
 import { NewsRepository } from '../src/data/news'
-interface Props {
-  news: PromiseType<ReturnType<NewsRepository['getNews']>>
+
+const Home: NextPage = () => {
+  return <HomeContainer />
 }
 
-const Home: NextPage<Props> = ({ news }) => {
-  return <HomeContainer news={news} />
-}
-
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps = async () => {
+  const queryClient = new QueryClient()
   const newsRepository = new NewsRepository(serverSideClient)
 
-  const news = await newsRepository.getNews()
+  await queryClient.prefetchQuery('news', () => newsRepository.getNews())
 
   return {
     props: {
-      news,
+      dehydratedState: dehydrate(queryClient),
     },
   }
 }

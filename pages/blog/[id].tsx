@@ -1,14 +1,10 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import { PromiseType } from 'utility-types'
+import { dehydrate, QueryClient } from 'react-query'
 import { serverSideClient } from '../../src/clients/micro-cms/server-side-client'
 import { BlogContainer } from '../../src/containers/pages/blog'
 import { NewsRepository } from '../../src/data/news/repository'
 
-interface Props {
-  news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
-}
-
-const Blog: NextPage<Props> = ({ news }) => <BlogContainer news={news} />
+const Blog: NextPage<{ id: string }> = ({ id }) => <BlogContainer id={id} />
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const newsRepository = new NewsRepository(serverSideClient)
@@ -19,7 +15,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<
-  Props,
+  { id: string },
   { id: string; slug: string },
   { draftKey: string }
 > = async (context) => {
@@ -32,23 +28,31 @@ export const getStaticProps: GetStaticProps<
   ) {
     const contentId = context.params.id
     const draftKey = context.previewData.draftKey
+    const queryClient = new QueryClient()
 
-    const news = await newsRepository.getNewsOnID(contentId, { draftKey })
+    await queryClient.prefetchQuery('posts', () =>
+      newsRepository.getNewsOnID(contentId, { draftKey })
+    )
 
     return {
       props: {
-        news,
+        id: contentId,
+        dehydratedState: dehydrate(queryClient),
         fallback: false,
       },
     }
   }
 
-  const id = context.params?.id
-  const news = await newsRepository.getNewsOnID(id ?? '')
+  const id = context.params?.id ?? ''
+
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery('posts', () => newsRepository.getNewsOnID(id))
 
   return {
     props: {
-      news,
+      id,
+      dehydratedState: dehydrate(queryClient),
     },
   }
 }

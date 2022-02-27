@@ -3,11 +3,11 @@ import { PromiseType } from 'utility-types'
 import { NewsRepository } from '../../../data/news'
 
 export interface Props {
-  news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
+  id: string
 }
 
 export interface StateToProps {
-  news: Props['news']
+  news: PromiseType<ReturnType<NewsRepository['getNewsOnID']>>
   status: QueryStatus
 }
 
