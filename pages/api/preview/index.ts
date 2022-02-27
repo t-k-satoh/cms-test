@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { serverSideClient } from '../../../src/clients/micro-cms/server-side-client'
 import { NewsRepository } from '../../../src/data/news/repository'
 
 export default async function handler(
@@ -11,7 +12,7 @@ export default async function handler(
         return res.status(404).end()
       }
 
-      const newsRepository = new NewsRepository()
+      const newsRepository = new NewsRepository(serverSideClient)
 
       const content = await newsRepository.getNewsOnID(String(req.query.slug), {
         fields: 'id',
