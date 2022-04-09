@@ -1,12 +1,12 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.2.4
+  browser-tools: circleci/browser-tools@1.2.5
 
 executors:
   default:
     working_directory: ~/workspace
     docker:
-      - image: node:17.6.0
+      - image: node:17.8.0
 
 commands:
   restore_yarn:
