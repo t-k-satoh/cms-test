@@ -1,20 +1,17 @@
-import Link from 'next/link'
+import Image from 'next/image'
 import * as React from 'react'
 import { Props } from './types'
 
-export const Home: React.VFC<Props> = (props) => {
-  const { news, status } = props
-
+export const Home: React.VFC<Props> = () => {
   return (
     <div>
-      {status}
-      {news.items.map(({ id, title }) => (
-        <li key={id}>
-          <Link href={`/blog/${id}`}>
-            <a>{title}</a>
-          </Link>
-        </li>
-      ))}
+      <Image
+        alt="Dragon"
+        src="/dragon_no_string.png"
+        layout="fill"
+        objectFit="none"
+        quality={100}
+      />
     </div>
   )
 }
