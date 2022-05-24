@@ -23,7 +23,7 @@
     "react-query": "3.39.0",
     "styled-components": "5.3.5",
     "styled-reset": "4.4.1",
-    "stylelint": "14.8.3",
+    "stylelint": "14.8.4",
     "stylelint-config-recommended": "7.0.0",
     "stylelint-config-styled-components": "0.1.1",
     "stylelint-processor-styled-components": "1.10.0",
