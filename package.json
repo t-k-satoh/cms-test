@@ -21,7 +21,7 @@
     "react-dom": "18.2.0",
     "react-loading": "2.0.3",
     "react-query": "3.39.1",
-    "styled-components": "5.3.5",
+    "styled-components": "6.1.13",
     "styled-reset": "4.4.1",
     "stylelint": "15.0.0",
     "stylelint-config-recommended": "13.0.0",
