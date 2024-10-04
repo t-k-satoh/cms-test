@@ -6,7 +6,7 @@ executors:
   default:
     working_directory: ~/workspace
     docker:
-      - image: node:20.5.1
+      - image: node:20.18.0
 
 commands:
   restore_yarn:
